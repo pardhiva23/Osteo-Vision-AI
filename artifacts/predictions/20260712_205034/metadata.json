@@ -1,0 +1,12 @@
+{
+    "image": "sample.jpg",
+    "prediction": "Viable",
+    "confidence": 96.93675994873047,
+    "probabilities": {
+        "Non-Tumor": 0.007831458002328873,
+        "Non-Viable-Tumor": 0.022800954058766365,
+        "Viable": 0.9693676233291626
+    },
+    "inference_time_ms": 1061.891999999716,
+    "model": "OsteoVisionNet"
+}

@@ -1,0 +1,13 @@
+{
+    "image": "Case-3-A12-19907-12559.jpg",
+    "prediction": "Non-Viable-Tumor",
+    "confidence": 94.90071868896484,
+    "probabilities": {
+        "Non-Tumor": 0.04184674844145775,
+        "Non-Viable-Tumor": 0.9490072131156921,
+        "Viable": 0.009146047756075859
+    },
+    "inference_time_ms": 1053.5079000001133,
+    "folder": "artifacts\\predictions\\20260713_115951",
+    "model": "OsteoVisionNet"
+}

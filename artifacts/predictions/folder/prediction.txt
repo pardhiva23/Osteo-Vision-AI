@@ -1,0 +1,19 @@
+============================================================
+OSTEOVISION AI
+============================================================
+
+Image : sample.jpg
+
+Prediction : Viable
+Confidence : 96.94 %
+
+Probabilities
+------------------------------
+Non-Tumor            0.0078
+Non-Viable-Tumor     0.0228
+Viable               0.9694
+
+Inference Time : 259.86 ms
+============================================================
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJQYXJkaGl2YXRpcHBhbGFAZ21haWwuY29tIiwiZXhwIjoxNzgzODgxNzQwfQ.lWXw3hLIaJQ633FviRHj6pKTultvjtvvEAROa0gXauI
