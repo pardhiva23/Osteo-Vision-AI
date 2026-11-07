@@ -13,18 +13,34 @@ from app.database.crud import (
     get_prediction_by_id,
 )
 
-genai.configure(
-    api_key=settings.GEMINI_API_KEY
-)
-
-
 class ChatService:
 
     def __init__(self):
 
-        self.model = genai.GenerativeModel(
-            settings.GEMINI_MODEL
-        )
+        self._model = None
+
+    @property
+    def model(self):
+
+        if not settings.GEMINI_API_KEY:
+
+            raise RuntimeError(
+                "AI chat is not configured. "
+                "Set GEMINI_API_KEY in the .env file and restart the backend."
+            )
+
+        if self._model is None:
+
+            genai.configure(
+                api_key=settings.GEMINI_API_KEY,
+                transport="rest",
+            )
+
+            self._model = genai.GenerativeModel(
+                settings.GEMINI_MODEL
+            )
+
+        return self._model
 
     def chat(
         self,
@@ -41,7 +57,7 @@ class ChatService:
                 prediction_id,
             )
 
-            if prediction is None:
+            if prediction is None or prediction.user_id != user_id:
 
                 raise ValueError(
                     "Prediction not found."

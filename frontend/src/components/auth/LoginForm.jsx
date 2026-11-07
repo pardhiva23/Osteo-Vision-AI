@@ -3,6 +3,8 @@ import { Link, useNavigate} from "react-router-dom";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
 
 import AuthCard from "./AuthCard";
+import { loginUser } from "../../services/auth";
+import { getErrorMessage } from "../../services/api";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -11,18 +13,31 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    console.log({
-      email,
-      password,
-    });
-    
-    navigate("/dashboard");
-    // TODO:
-    // Call Login API
+    if (loading) return;
+
+    if (!email.trim() || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+
+    try {
+      await loginUser({ email: email.trim(), password });
+
+      navigate("/dashboard");
+    } catch (err) {
+      setError(getErrorMessage(err, "Login failed."));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -220,10 +235,17 @@ export default function LoginForm() {
 
         </div>
 
+        {error && (
+          <p className="text-red-400 text-sm text-center" style={{ margin: "0.5rem" }}>
+            {error}
+          </p>
+        )}
+
         {/* Login */}
 
         <button
           type="submit"
+          disabled={loading}
           className="
           w-110
 
@@ -251,7 +273,7 @@ export default function LoginForm() {
           "
           style={{ margin: "1.0rem" }}
         >
-          Login
+          {loading ? "Signing in..." : "Login"}
         </button>
 
       </form>

@@ -1,21 +1,34 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Upload, FileImage, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function UploadPanel() {
-  const [files, setFiles] = useState([
-    {
-      id: 1,
-      name: "sample_xray.png",
-      size: "1.2 MB",
-      type: "Image",
-      thumbnail: null,
-    },
-  ]);
+const formatSize = (bytes) =>
+  bytes >= 1024 * 1024
+    ? `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+    : `${Math.max(1, Math.round(bytes / 1024))} KB`;
 
-  function handleRemove(id) {
-    setFiles((prev) => prev.filter((f) => f.id !== id));
-  }
+export default function UploadPanel({ files = [], setFiles }) {
+  const inputRef = useRef(null);
+
+  const [dragging, setDragging] = useState(false);
+
+  const addFiles = (list) => {
+    const picked = Array.from(list || []);
+
+    if (picked.length === 0) return;
+
+    setFiles((prev) => [...(prev || []), ...picked]);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragging(false);
+    addFiles(e.dataTransfer.files);
+  };
+
+  const handleRemove = (index) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
 
   return (
     <motion.div
@@ -34,13 +47,33 @@ export default function UploadPanel() {
       </h2>
 
       <p className="text-gray-400 text-sm mt-1">
-        Upload medical images or documents to analyze with AI.
+        Upload a histopathology image, then press send to analyze it with AI.
       </p>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          addFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
 
       {/* Upload Box */}
 
       <button
-        className="
+        type="button"
+        onClick={() => inputRef.current?.click()}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={handleDrop}
+        className={`
         mt-6
 
         w-full
@@ -52,7 +85,7 @@ export default function UploadPanel() {
         border-dashed
         border-cyan-500/25
 
-        bg-white/[0.02]
+        ${dragging ? "bg-cyan-500/10" : "bg-white/[0.02]"}
 
         hover:bg-cyan-500/5
 
@@ -63,7 +96,7 @@ export default function UploadPanel() {
 
         items-center
         justify-center
-        "
+        `}
       >
         <Upload
           size={36}
@@ -80,7 +113,7 @@ export default function UploadPanel() {
       </button>
 
       <p className="text-gray-500 text-xs mt-3">
-        Supports: JPG, PNG, DICOM, PDF (Max 20MB)
+        Supports: JPG, PNG
       </p>
 
       {/* Uploaded Files */}
@@ -133,9 +166,9 @@ export default function UploadPanel() {
 
           <div className="space-y-3">
 
-            {files.map((file) => (
+            {files.map((file, index) => (
               <div
-                key={file.id}
+                key={`${file.name}-${index}`}
                 className="
                 rounded-2xl
 
@@ -179,18 +212,10 @@ export default function UploadPanel() {
                     overflow-hidden
                     "
                   >
-                    {file.thumbnail ? (
-                      <img
-                        src={file.thumbnail}
-                        alt={file.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <FileImage
-                        size={20}
-                        className="text-cyan-400"
-                      />
-                    )}
+                    <FileImage
+                      size={20}
+                      className="text-cyan-400"
+                    />
                   </div>
 
                   <div className="min-w-0">
@@ -200,7 +225,7 @@ export default function UploadPanel() {
                     </p>
 
                     <p className="text-gray-500 text-xs">
-                      {file.size} • {file.type}
+                      {formatSize(file.size)} • {file.type?.startsWith("image/") ? "Image" : "File"}
                     </p>
 
                   </div>
@@ -208,7 +233,7 @@ export default function UploadPanel() {
                 </div>
 
                 <button
-                  onClick={() => handleRemove(file.id)}
+                  onClick={() => handleRemove(index)}
                   className="
                   text-gray-500
 

@@ -12,10 +12,12 @@ from fastapi import (
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import get_current_user
+from app.database.crud import get_chat_history
 from app.database.database import get_db
 
 from app.schemas.chat import (
     ChatRequest,
+    ChatResponse,
 )
 
 from app.services.chat_service import (
@@ -58,19 +60,26 @@ def chat(
             detail=str(e),
         )
 
+    except RuntimeError as e:
+
+        # e.g. GEMINI_API_KEY not configured
+        raise HTTPException(
+            status_code=503,
+            detail=str(e),
+        )
+
     except Exception as e:
 
         raise HTTPException(
             status_code=500,
             detail=str(e),
         )
-    
-from app.database.crud import (
-    get_chat_history,
+
+
+@router.get(
+    "/history",
+    response_model=list[ChatResponse],
 )
-
-
-@router.get("/history")
 def history(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),

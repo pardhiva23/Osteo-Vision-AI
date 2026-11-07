@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 
 import AuthCard from "./AuthCard";
+import { registerUser } from "../../services/auth";
+import { getErrorMessage } from "../../services/api";
 
 export default function RegisterForm() {
 
@@ -31,9 +33,12 @@ export default function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
-const handleRegister = (e) => {
+const handleRegister = async (e) => {
   e.preventDefault();
+
+  if (loading) return;
 
   const err = {};
 
@@ -60,11 +65,25 @@ const handleRegister = (e) => {
   if (Object.keys(err).length > 0)
     return;
 
-  // Frontend testing
+  setLoading(true);
 
-  alert("Account Created Successfully!");
+  try {
+    await registerUser({
+      username: username.trim(),
+      email: email.trim(),
+      password,
+    });
 
-  navigate("/login");
+    alert("Account Created Successfully! Please log in.");
+
+    navigate("/login");
+  } catch (error) {
+    setErrors({
+      form: getErrorMessage(error, "Registration failed."),
+    });
+  } finally {
+    setLoading(false);
+  }
 };
 
 
@@ -424,8 +443,15 @@ const handleRegister = (e) => {
 
         </div>
 
+        {errors.form && (
+          <p className="text-red-400 text-sm text-center" style={{ margin: "0.5rem" }}>
+            {errors.form}
+          </p>
+        )}
+
         <button
           type="submit"
+          disabled={loading}
           className="
           w-109
           h-14
@@ -447,7 +473,7 @@ const handleRegister = (e) => {
           "
           style={{ margin: "1.0rem" }}
         >
-          Create Account
+          {loading ? "Creating account..." : "Create Account"}
 
         </button>
 

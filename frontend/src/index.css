@@ -23,3 +23,24 @@ button,
 input{
     font-family:inherit;
 }
+
+/* Markdown rendering inside assistant chat bubbles */
+.markdown p + p,
+.markdown ul,
+.markdown ol {
+    margin-top: 0.6rem;
+}
+
+.markdown ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+}
+
+.markdown ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+}
+
+.markdown strong {
+    color: #fff;
+}

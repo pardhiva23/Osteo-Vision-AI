@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
@@ -6,6 +6,7 @@ import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import OTP from "./pages/OTP/OTP";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function App() {
     return (
@@ -34,7 +35,11 @@ function App() {
 
                 <Route
                     path="/dashboard"
-                    element={<Dashboard />}
+                    element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    }
                 />
 
             </Routes>

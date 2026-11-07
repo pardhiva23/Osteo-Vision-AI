@@ -3,29 +3,22 @@ Database Configuration
 OsteoVision AI
 """
 
-from pathlib import Path
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import sessionmaker
+
 from app.core.config import settings
 
-DATABASE_PATH = (
-    Path("app")
-    / "database"
-    / "osteovision.db"
-)
 
-DATABASE_URL = (
-    f"sqlite:///{DATABASE_PATH}"
-)
+connect_args = {}
+
+if settings.DATABASE_URL.startswith("sqlite"):
+    connect_args["check_same_thread"] = False
 
 
 engine = create_engine(
     settings.DATABASE_URL,
-    connect_args={
-        "check_same_thread": False,
-    },
+    connect_args=connect_args,
 )
 
 

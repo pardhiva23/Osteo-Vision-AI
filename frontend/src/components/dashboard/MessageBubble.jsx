@@ -1,4 +1,5 @@
 import { User } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import logo from "../../assets/logo/logo.png";
 
 export default function MessageBubble({ role = "assistant", text = "" }) {
@@ -72,7 +73,13 @@ export default function MessageBubble({ role = "assistant", text = "" }) {
         }
         `}
       >
-        {text}
+        {isUser ? (
+          <span className="whitespace-pre-wrap">{text}</span>
+        ) : (
+          <div className="markdown">
+            <ReactMarkdown>{text}</ReactMarkdown>
+          </div>
+        )}
       </div>
 
     </div>

@@ -7,12 +7,14 @@ from datetime import datetime
 from pathlib import Path
 import json
 import shutil
+import uuid
+
+from src.config.settings import PREDICTIONS_DIR
 
 
 class ArtifactManager:
 
-    ROOT = Path("artifacts")
-    PREDICTIONS = ROOT / "predictions"
+    PREDICTIONS = Path(PREDICTIONS_DIR)
 
     @classmethod
     def create_prediction_folder(cls):
@@ -21,7 +23,8 @@ class ArtifactManager:
             "%Y%m%d_%H%M%S"
         )
 
-        folder = cls.PREDICTIONS / timestamp
+        # Short random suffix keeps folder names unique and hard to guess.
+        folder = cls.PREDICTIONS / f"{timestamp}_{uuid.uuid4().hex[:8]}"
 
         folder.mkdir(
             parents=True,

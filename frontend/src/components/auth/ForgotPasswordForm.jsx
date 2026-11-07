@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 export default function ForgotPasswordForm() {
   const emailRef = useRef(null);
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
   const handleSubmit = (e) => {
 
@@ -51,6 +52,7 @@ export default function ForgotPasswordForm() {
             type="email"
             placeholder="Email Address"
             ref={emailRef}
+            value={email}
             style={{ paddingLeft: "3.5rem", paddingRight: "3.5rem" }}
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={(e) => {

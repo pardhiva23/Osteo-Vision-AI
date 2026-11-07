@@ -7,69 +7,37 @@ import {
   User,
   LogOut,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 import logo from "../../assets/logo/logo.png";
 
-export default function Sidebar() {
-  const navigate = useNavigate();
-  const user = {
-    name: "Pardhiva Reddy",
-  };
+const toDate = (value) => {
+  if (!value) return null;
 
-  const [showModels, setShowModels] = useState(false);
+  // The API returns naive UTC timestamps; mark them as UTC.
+  const iso = /[zZ]|[+-]\d\d:?\d\d$/.test(value) ? value : `${value}Z`;
+
+  return new Date(iso);
+};
+
+const formatDate = (value) => {
+  const date = toDate(value);
+
+  return date ? date.toLocaleDateString() : "";
+};
+
+export default function Sidebar({
+  user,
+  history = [],
+  activeId = null,
+  onNewChat,
+  onSelect,
+  onLogout,
+}) {
   const [showProfile, setShowProfile] = useState(false);
 
-  const recentChats = [
-    {
-      title: "Explain Osteosarcoma",
-      time: "Today",
-    },
-    {
-      title: "MRI Bone Scan",
-      time: "Today",
-    },
-    {
-      title: "Upload X-Ray",
-      time: "Yesterday",
-    },
-    {
-      title: "Bone Tumor Detection",
-      time: "Yesterday",
-    },
-    {
-      title: "Confidence Report",
-      time: "2 days ago",
-    },
-    {
-      title: "Stage Prediction",
-      time: "2 days ago",
-    },
-    {
-      title: "Medical Report",
-      time: "3 days ago",
-    },
-    {
-      title: "CT Scan Analysis",
-      time: "3 days ago",
-    },
-    {
-      title: "Deep Learning Result",
-      time: "4 days ago",
-    },
-    {
-      title: "Patient Report",
-      time: "5 days ago",
-    },
-    {
-      title: "Prediction History",
-      time: "Last Week",
-    },
-    {
-      title: "OsteoVision Demo",
-      time: "Last Week",
-    },
-  ];
+  const displayName = user?.username || "User";
+
+  const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <motion.div
@@ -129,6 +97,7 @@ export default function Sidebar() {
       <div className="px-6 mt-8" style={{margin:"1rem"}}>
 
         <button
+          onClick={onNewChat}
           className="
           w-full
 
@@ -197,11 +166,18 @@ export default function Sidebar() {
 
         <div className="space-y-2" style={{margin:"0.5rem"}}>
 
-          {recentChats.map((chat, index) => (
+          {history.length === 0 && (
+            <p className="text-gray-500 text-sm" style={{margin:"0.6rem"}}>
+              No scans analyzed yet.
+            </p>
+          )}
+
+          {history.map((chat) => (
 
             <button
-              key={index}
-              className="
+              key={chat.id}
+              onClick={() => onSelect?.(chat)}
+              className={`
               w-full
 
               rounded-xl
@@ -212,6 +188,8 @@ export default function Sidebar() {
 
               transition-all
 
+              ${chat.id === activeId ? "bg-white/5" : ""}
+
               text-left
 
               flex
@@ -219,7 +197,7 @@ export default function Sidebar() {
               justify-between
 
               items-start
-              "
+              `}
             >
 
               <div className="flex gap-3" style={{margin:"0.6rem"}}>
@@ -240,7 +218,7 @@ export default function Sidebar() {
                     line-clamp-1
                     "
                   >
-                    {chat.title}
+                    {chat.image_name}
                   </p>
 
                 </div>
@@ -258,7 +236,7 @@ export default function Sidebar() {
                 whitespace-nowrap
                 "
               >
-                {chat.time}
+                {formatDate(chat.created_at)}
               </span>
 
             </button>
@@ -331,16 +309,16 @@ export default function Sidebar() {
               font-semibold
               "
             >
-              P
+              {initial}
             </div>
 
             <div className="text-left" style={{margin:"0.3rem"}}>
               <p className="text-white text-sm font-medium">
-                Pardhiva Reddy
+                {displayName}
               </p>
 
-              <p className="text-gray-500 text-xs">
-                Free Plan
+              <p className="text-gray-500 text-xs max-w-[140px] truncate">
+                {user?.email || ""}
               </p>
             </div>
           </div>
@@ -394,11 +372,11 @@ export default function Sidebar() {
 
                   <div>
                     <p className="text-white font-medium">
-                      {user.name}
+                      {displayName}
                     </p>
 
                     <p className="text-gray-500 text-xs">
-                      AI User
+                      {user?.email || ""}
                     </p>
                   </div>
                 </div>
@@ -407,7 +385,7 @@ export default function Sidebar() {
               <div className="border-t border-white/10" />
 
               <button
-                onClick={() => navigate("/login")}
+                onClick={onLogout}
                 className="
                 w-full
 

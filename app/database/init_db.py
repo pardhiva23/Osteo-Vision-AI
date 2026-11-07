@@ -6,7 +6,8 @@ from app.database.database import (
     engine,
 )
 
-from app.database.models import Base
+from app.database import models  # noqa: F401  (registers the tables)
+from app.database.database import Base
 
 
 def init_database():
@@ -15,11 +16,11 @@ def init_database():
         bind=engine,
     )
 
-    print(
-        "\nDatabase initialized successfully."
-    )
-
 
 if __name__ == "__main__":
 
     init_database()
+
+    print(
+        "\nDatabase initialized successfully."
+    )
