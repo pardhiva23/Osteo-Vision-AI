@@ -27,6 +27,7 @@ export default function UploadPanel() {
       border-b
       border-cyan-500/10
       "
+      style={{marginBottom:"0.5rem", marginLeft:"0.8rem"}}
     >
       <h2 className="text-white text-xl font-semibold">
         Upload Files

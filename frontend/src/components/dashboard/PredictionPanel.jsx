@@ -33,6 +33,7 @@ export default function PredictionPanel({
 
         p-6
         "
+        style={{marginBottom:"0.4rem", marginLeft:"0.2rem"}}
       >
 
         <span
@@ -53,6 +54,8 @@ export default function PredictionPanel({
 
           rounded-full
           "
+
+          style={{marginBottom:"0.4rem", marginLeft:"1rem"}}
         >
           Prediction
         </span>
@@ -63,7 +66,7 @@ export default function PredictionPanel({
 
         <div className="mt-6">
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between" style={{marginBottom:"1.2rem", marginLeft:"1rem"}}>
 
             <p className="text-gray-400 text-sm">
               Confidence Score
@@ -87,6 +90,7 @@ export default function PredictionPanel({
 
             overflow-hidden
             "
+            style={{marginBottom:"1rem", marginLeft:"1rem"}}
           >
 
             <div
@@ -106,7 +110,7 @@ export default function PredictionPanel({
 
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6" style={{marginBottom:"1.2rem", marginLeft:"1rem"}}>
 
           <p className="text-gray-400 text-sm">
             Analysis
@@ -125,7 +129,7 @@ export default function PredictionPanel({
 
           w-full
 
-          h-12
+          h-10
 
           rounded-xl
 
@@ -151,6 +155,7 @@ export default function PredictionPanel({
 
           disabled:cursor-not-allowed
           "
+          style={{marginBottom:"0.5rem", marginLeft:"0.5rem"}}
         >
           View Full Report
           <ExternalLink size={16} />
